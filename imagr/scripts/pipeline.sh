@@ -34,7 +34,7 @@ fi
 
 
 # Train
-docker run -v $OUTPUT_DIR:/trained_models -v $DATA_DIR:/mnt/data/micro_controller/tfrecord \
+docker run --gpus device=0 -v $OUTPUT_DIR:/trained_models -v $DATA_DIR:/mnt/data/micro_controller/tfrecord \
 australia-southeast1-docker.pkg.dev/ml-shared-c-c41d/ml/object_detection_tf1:master \
 python3 object_detection/model_main.py \
     --logtostderr=true \
