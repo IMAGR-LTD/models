@@ -1,0 +1,11 @@
+steps:
+- name: 'gcr.io/kaniko-project/executor:latest'
+  args:
+  - --dockerfile=imagr/dockerfile/objection_detection/tf1/Dockerfile
+  - --destination=australia-southeast1-docker.pkg.dev/$PROJECT_ID//ml/object_detection_tf1:$BRANCH_NAME
+  - --destination=australia-southeast1-docker.pkg.dev/$PROJECT_ID/ml/object_detection_tf1:$SHORT_SHA
+  - --context=.
+  - --cache=true
+  waitFor: ['-']
+
+timeout: 3600s

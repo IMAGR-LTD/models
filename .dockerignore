@@ -1,0 +1,4 @@
+cloudbuild.yaml
+*.md
+.git
+.github
