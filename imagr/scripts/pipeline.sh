@@ -50,7 +50,7 @@ LAST_CHECKPOINT=$(cat $OUTPUT_DIR/last_ckpts.txt)
 
 echo "FOUND LASTCHECKPOINT $LAST_CHECKPOINT"
 
-mkdir -p /trained_model/export
+mkdir -p $OUTPUT_DIR/export
 
 # Export to SDD graph
 docker run -v $OUTPUT_DIR:/trained_model australia-southeast1-docker.pkg.dev/ml-shared-c-c41d/ml/object_detection_tf1:585776b \
