@@ -4,9 +4,9 @@ set -e
 
 while getopts ":o:d:" opt; do
   case $opt in
-    o) DATA_DIR="$OPTARG"
+    o) OUTPUT_DIR="$OPTARG"
     ;;
-    d) OUTPUT_DIR="$OPTARG"
+    d) DATA_DIR="$OPTARG"
     ;;
     \?) echo "Invalid option -$OPTARG" >&2
     exit 1

@@ -36,7 +36,7 @@ WORKDIR /home/tensorflow
 COPY ./research/object_detection/packages/tf1/setup.py ./
 RUN python -m pip install --user -U pip && \
     python -m pip install --user . && \
-    python -m pip install --user google-api-python-client oauth2client
+    python -m pip install --user google-api-python-client oauth2client keras==2.2.5
 
 # Copy this version of of the model garden into the imagels
 COPY . /home/tensorflow/models
@@ -46,4 +46,4 @@ RUN (cd /home/tensorflow/models/research/ && protoc */protos/*.proto --python_ou
 
 ENV TF_CPP_MIN_LOG_LEVEL 3
 ENV PATH="/home/tensorflow/.local/bin:/home/tensorflow/models/:/home/tensorflow/.local/bin:${PATH}"
-ENV PYTHONPATH="/home/tensorflow/models/research/:${PYTHONPATH}"
+ENV PYTHONPATH="/home/tensorflow/models/research/:/home/tensorflow/models/research/slim:${PYTHONPATH}"
