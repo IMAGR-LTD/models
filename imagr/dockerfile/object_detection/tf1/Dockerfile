@@ -1,4 +1,4 @@
-FROM walterwangimagr/tf1.15.5-gpu-py3-opencv
+FROM australia-southeast1-docker.pkg.dev/ml-shared-c-c41d/ml/tf1_with_opencv:7f783eb
 
 ARG DEBIAN_FRONTEND=noninteractive
 

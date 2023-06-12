@@ -1,13 +1,13 @@
 steps:
-# - id: 'tf1_opencv'
-#   name: 'gcr.io/kaniko-project/executor:latest'
-#   args:
-#   - --dockerfile=imagr/dockerfile/tf1_with_opencv/Dockerfile
-#   - --destination=australia-southeast1-docker.pkg.dev/$PROJECT_ID/ml/tf1_with_opencv:$BRANCH_NAME
-#   - --destination=australia-southeast1-docker.pkg.dev/$PROJECT_ID/ml/tf1_with_opencv:$SHORT_SHA
-#   - --context=.
-#   - --cache=true
-#   waitFor: ['-']
+- id: 'tf1_opencv'
+  name: 'gcr.io/kaniko-project/executor:latest'
+  args:
+  - --dockerfile=imagr/dockerfile/tf1_with_opencv/Dockerfile
+  - --destination=australia-southeast1-docker.pkg.dev/$PROJECT_ID/ml/tf1_with_opencv:$BRANCH_NAME
+  - --destination=australia-southeast1-docker.pkg.dev/$PROJECT_ID/ml/tf1_with_opencv:$SHORT_SHA
+  - --context=.
+  - --cache=true
+  waitFor: ['-']
 - id: 'tf1_objection'
   name: 'gcr.io/kaniko-project/executor:latest'
   args:
