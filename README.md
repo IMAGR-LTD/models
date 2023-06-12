@@ -29,7 +29,7 @@ dvc import /mnt/nas_cv/data-repository labelled/20230601_cam0_microcontroller
   * create a new folder `test_model_run` and put the `pipeline.config` in here
 * update the config file, particular what tfrecord to use
 
-```JSON
+```
 train_input_reader: {
   label_map_path: "/data/label_map/label_map.pbtxt"
   tf_record_input_reader {
@@ -69,7 +69,7 @@ bash imagr/scripts/pipeline.sh -o $PWD/imagr_models/test_model_run -d $PWD/imagr
 
 If you want to have an interactive shell then you can run the docker container and mount the whole folder
 
-```console
-// Assuming you are in the models directory
+```bash
+# Assuming you are in the models directory
 docker run -it -v $PWD:/home/tensorflow/models australia-southeast1-docker.pkg.dev/ml-shared-c-c41d/ml/object_detection_tf1:585776b bash
 ```
