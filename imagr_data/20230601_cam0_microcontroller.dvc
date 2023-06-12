@@ -1,0 +1,12 @@
+md5: edca1b9ce12c5b24d6d8c94d909c22a3
+frozen: true
+deps:
+- path: labelled/20230601_cam0_microcontroller
+  repo:
+    url: /mnt/nas_cv/data-repository
+    rev_lock: 3fe15aaf715495ca397883f65aaf189f561bbd32
+outs:
+- md5: 088facc08a49dff7365fade4661292d0.dir
+  size: 1254311740
+  nfiles: 19
+  path: 20230601_cam0_microcontroller
