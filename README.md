@@ -27,7 +27,7 @@ dvc import /mnt/nas_cv/data-repository labelled/20230601_cam0_microcontroller
 * Create a dir to save all the training output, checkpoint, export model, etc. 
   * eg. my models  path: `$PWD/models/imagr_models`
   * create a new folder `test_model_run` and put the `pipeline.config` in here
-* update the config file, particular what tfrecord to use
+* update the config file, specificaly what tfrecord and label map to use
 
 ```
 train_input_reader: {
