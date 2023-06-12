@@ -74,7 +74,7 @@ python3 models/research/object_detection/export_tflite_ssd_graph.py \
 
 
 # Export to tflite
-docker run -v $OUTPUT_DIR:/trained_model tensorflow/tensorflow:2.11.0
+docker run -v $OUTPUT_DIR:/trained_model tensorflow/tensorflow:2.11.0 \
 tflite_convert \
 --enable_v1_converter  \
 --output_file="/trained_model/export/model.tflite"   \
