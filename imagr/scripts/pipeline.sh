@@ -44,7 +44,7 @@ python3 models/research/object_detection/model_main.py \
 
 # Write latest checkpoint name to a file
 docker run -v $OUTPUT_DIR:/trained_model australia-southeast1-docker.pkg.dev/ml-shared-c-c41d/ml/object_detection_tf1:67a1146 \
-python3 models/imagr/scripts/get_last_ckpts.py /train_models/pipeline last_ckpts.txt
+python3 models/imagr/scripts/get_last_ckpts.py /trained_model last_ckpts.txt
 
 $LAST_CHECKPOINT=$(cat $OUTPUT_DIR/last_ckpts.txt)
 
@@ -53,8 +53,8 @@ echo "FOUND LASTCHECKPOINT $LAST_CHECKPOINT"
 # Export to SDD graph
 docker run -v $OUTPUT_DIR:/trained_model australia-southeast1-docker.pkg.dev/ml-shared-c-c41d/ml/object_detection_tf1:67a1146 \
 python3 models/research/object_detection/export_tflite_ssd_graph.py \
-  --pipeline_config_path=/train_models/pipeline.config \
-  --trained_checkpoint_prefix=$LAST_CHECKPOINT \
+  --pipeline_config_path=/trained_model/pipeline.config \
+  --trained_checkpoint_prefix=/trained_model/$LAST_CHECKPOINT \
   --output_directory=/trained_model \
   --config_override " \
       model{ \
