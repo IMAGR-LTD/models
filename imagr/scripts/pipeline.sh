@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -e
+set -ex
 
 while getopts ":o:d:" opt; do
   case $opt in
@@ -46,7 +46,7 @@ python3 models/research/object_detection/model_main.py \
 docker run -v $OUTPUT_DIR:/trained_model australia-southeast1-docker.pkg.dev/ml-shared-c-c41d/ml/object_detection_tf1:585776b \
 python3 models/imagr/scripts/get_last_ckpts.py /trained_model last_ckpts.txt
 
-$LAST_CHECKPOINT=$(cat $OUTPUT_DIR/last_ckpts.txt)
+LAST_CHECKPOINT=$(cat $OUTPUT_DIR/last_ckpts.txt)
 
 echo "FOUND LASTCHECKPOINT $LAST_CHECKPOINT"
 
