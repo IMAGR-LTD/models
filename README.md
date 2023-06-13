@@ -13,6 +13,23 @@ gcloud auth configure-docker \
 
 This is IMAGR fork of https://github.com/tensorflow/models. There are imagr additions to train models.
 
+# Track data and models 
+
+```bash 
+# make sure mount nas on /mnt/nas_cv
+# keep track of data_imagr and models_imagr 
+# everytime when you add new data to the data folder or train a model use 
+dvc add models_imagr 
+dvc add data_imagr 
+git add models_imagr.dvc
+git add data_imagr.dvc
+dvc push 
+# in the new location use 
+dvc pull 
+```
+
+
+
 ## Object Detection
 
 ### Prepare the dataset folder 
