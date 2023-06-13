@@ -82,5 +82,8 @@ If you want to have an interactive shell then you can run the docker container a
 
 ```bash
 # Assuming you are in the models directory
-docker run -it -v $PWD:/home/tensorflow/models australia-southeast1-docker.pkg.dev/ml-shared-c-c41d/ml/object_detection_tf1:585776b bash
+docker run -u $(id -u):$(id -g) -it -v $PWD:/home/tensorflow/models \
+-v $PWD/imagr_data/20230601_cam0_microcontroller:/data \
+-v $PWD/imagr_models:/trained_model \
+-w /home/tensorflow/models/research australia-southeast1-docker.pkg.dev/ml-shared-c-c41d/ml/object_detection_tf1:585776b  /bin/bash
 ```
