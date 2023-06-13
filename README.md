@@ -1,3 +1,14 @@
+# Authenticate 
+
+```bash 
+# gcloud 
+gcloud auth login 
+gcloud config set project ml-shared-c-c41d
+# docker 
+gcloud auth configure-docker \
+    australia-southeast1-docker.pkg.dev
+```
+
 # models
 
 This is IMAGR fork of https://github.com/tensorflow/models. There are imagr additions to train models.
