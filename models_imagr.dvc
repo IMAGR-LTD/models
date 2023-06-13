@@ -1,0 +1,5 @@
+outs:
+- md5: 4d087de469b13270202a47afc21c07f2.dir
+  size: 326472885
+  nfiles: 23
+  path: models_imagr

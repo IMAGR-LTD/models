@@ -99,3 +99,4 @@ ENV/
 # For mac
 .DS_Store
 /data_imagr
+/models_imagr
