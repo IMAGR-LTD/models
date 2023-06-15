@@ -113,6 +113,13 @@ docker run --gpus device=3 -it -v $PWD:/home/tensorflow/models \
 
 # Inference 
 
+```bash
+bash inf_docker_run.sh
+# modify the imagr/script/inf.sh MODEL_DIR and DATASET
+# then run 
+bash imagr/scripts/inf.sh
+```
+
 
 
 ```bash
@@ -129,11 +136,11 @@ edgetpu_inf bash
 
 ```bash
 MODEL_DIR="every_ten"
-INPUT_DATASET="test_set_ten_prod_ten_locations_080623"
-python3 detect_image.py \
-  --model /models/$MODEL_DIR/export/model_edgetpu.tflite \
-  --labels /models/labels.txt \
-  --input /data/$INPUT_DATASET \
-  --output /script/result/output
+INPUT_DATASET="OD_instore_090623_testset"
+python3 imagr/scripts/detect_image.py \
+  --model /models/models_imagr/$MODEL_DIR/export/model_edgetpu.tflite \
+  --labels /models/models_imagr/labels.txt \
+  --input /data/images/$INPUT_DATASET \
+  --output /results/$MODEL_DIR"_"$INPUT_DATASET
 ```
 
