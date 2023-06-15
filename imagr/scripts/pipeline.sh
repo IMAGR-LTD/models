@@ -2,39 +2,15 @@
 
 set -ex
 
-while getopts ":o:d:" opt; do
-  case $opt in
-    o) OUTPUT_DIR="$OPTARG"
-    ;;
-    d) DATA_DIR="$OPTARG"
-    ;;
-    \?) echo "Invalid option -$OPTARG" >&2
-    exit 1
-    ;;
-  esac
+MODEL="4k_data"
+DEVICE=2
 
-  case $OPTARG in
-    -*) echo "Option $opt needs a valid argument"
-    exit 1
-    ;;
-  esac
-done
 
-if [ -z "$DATA_DIR" ]
-then
-    echo "-d can't be empty, need to provide data directory"
-    exit 1
-fi
-
-if [ -z "$OUTPUT_DIR" ]
-then
-    echo "-o can't be empty, need to provide output directory"
-    exit 1
-fi
-
+OUTPUT_DIR="$PWD/models_imagr/$MODEL"
+DATA_DIR="$PWD/data_imagr"
 
 # Train
-docker run --gpus device=0 -v $OUTPUT_DIR:/trained_model -v $DATA_DIR:/data \
+docker run --gpus device=$DEVICE -v $OUTPUT_DIR:/trained_model -v $DATA_DIR:/data \
 australia-southeast1-docker.pkg.dev/ml-shared-c-c41d/ml/object_detection_tf1:585776b \
 python3 models/research/object_detection/model_main.py \
     --logtostderr=true \

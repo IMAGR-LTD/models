@@ -1,5 +1,6 @@
 [core]
     remote = nas_cv
+    autostage = true
 ['remote "nfs"']
     url = /mnt/nas_cv/data-repository/labelled
 ['remote "nas_cv"']

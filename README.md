@@ -88,8 +88,11 @@ Run the pipeline script to start the training pipeline. This pipeline script wil
 3. Convert the SSD graph to tflite file
 4. Concvert the tflite to edgetpu file
 
-```console
-bash imagr/scripts/pipeline.sh -o $PWD/imagr_models/test_model_run -d $PWD/imagr_data/20230601_cam0_microcontroller
+change the pipeline 
+
+```bash
+# under the models dir run 
+bash imagr/scripts/pipeline.sh
 ```
 
 
@@ -99,8 +102,8 @@ If you want to have an interactive shell then you can run the docker container a
 
 ```bash
 # Assuming you are in the models directory
-docker run -u $(id -u):$(id -g) -it -v $PWD:/home/tensorflow/models \
--v $PWD/imagr_data/20230601_cam0_microcontroller:/data \
--v $PWD/imagr_models:/trained_model \
--w /home/tensorflow/models/research australia-southeast1-docker.pkg.dev/ml-shared-c-c41d/ml/object_detection_tf1:585776b  /bin/bash
+docker run --gpus device=3 -it -v $PWD:/home/tensorflow/models \
+-v $PWD/data_imagr:/data \
+-v $PWD/models_imagr:/trained_model \
+-w /home/tensorflow/models/resea australia-southeast1-docker.pkg.dev/ml-shared-c-c41d/ml/object_detection_tf1:585776b  bash
 ```
