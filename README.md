@@ -95,6 +95,7 @@ change the pipeline
 bash imagr/scripts/pipeline.sh
 ```
 
+# Eval 
 
 ### Interactive shell
 
@@ -105,5 +106,32 @@ If you want to have an interactive shell then you can run the docker container a
 docker run --gpus device=3 -it -v $PWD:/home/tensorflow/models \
 -v $PWD/data_imagr:/data \
 -v $PWD/models_imagr:/trained_model \
--w /home/tensorflow/models/resea australia-southeast1-docker.pkg.dev/ml-shared-c-c41d/ml/object_detection_tf1:585776b  bash
+-w /home/tensorflow/models/research australia-southeast1-docker.pkg.dev/ml-shared-c-c41d/ml/object_detection_tf1:585776b  bash
 ```
+
+
+
+# Inference 
+
+
+
+```bash
+# --privileged flag is used to enable access to USB devices
+docker run -it --privileged \
+-v /dev/bus/usb:/dev/bus/usb \
+-v $PWD:/script \
+-v $PWD/saved_models:/models \
+-v /home/walter/nas_cv/walter_stuff/modular_dataset/micro_controller/images:/data \
+edgetpu_inf bash 
+```
+
+
+
+```bash
+python3 detect_image.py \
+  --model /models/every_ten/export/every_ten.tflite \
+  --labels /models/labels.txt \
+  --input /data/test_set_ten_prod_ten_locations_080623 \
+  --output /script/result/output
+```
+
