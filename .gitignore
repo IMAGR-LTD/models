@@ -1,3 +1,6 @@
+# ignore results folder
+#
+results/
 venv
 
 # Byte-compiled / optimized / DLL files
