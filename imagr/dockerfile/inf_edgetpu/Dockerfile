@@ -11,4 +11,4 @@ RUN curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add - &
 RUN apt-get install -y python3-pycoral
 
 # Install Python dependencies
-RUN pip3 install numpy pillow
+RUN pip3 install numpy pillow pycocotools

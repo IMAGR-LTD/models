@@ -114,6 +114,8 @@ docker run --gpus device=3 -it -v $PWD:/home/tensorflow/models \
 # Inference 
 
 ```bash
+# build docker container for inference 
+docker build -f imagr/dockerfile/inf_edgetpu/Dockerfile -t edgetpu_inf .
 bash inf_docker_run.sh
 # modify the imagr/script/inf.sh MODEL_DIR and DATASET
 # then run 
