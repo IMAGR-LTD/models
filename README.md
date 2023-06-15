@@ -117,21 +117,23 @@ docker run --gpus device=3 -it -v $PWD:/home/tensorflow/models \
 
 ```bash
 # --privileged flag is used to enable access to USB devices
-docker run -it --privileged \
--v /dev/bus/usb:/dev/bus/usb \
--v $PWD:/script \
--v $PWD/saved_models:/models \
--v /home/walter/nas_cv/walter_stuff/modular_dataset/micro_controller/images:/data \
+docker run -it --privileged -v /dev/bus/usb:/dev/bus/usb \
+-v $PWD/inf_imagr:/inf \
+-v $PWD/models_imagr:/models \
+-v $PWD/data_imagr:/data \
+-w /inf \
 edgetpu_inf bash 
 ```
 
 
 
 ```bash
+MODEL_DIR="every_ten"
+INPUT_DATASET="test_set_ten_prod_ten_locations_080623"
 python3 detect_image.py \
-  --model /models/every_ten/export/every_ten.tflite \
+  --model /models/$MODEL_DIR/export/model_edgetpu.tflite \
   --labels /models/labels.txt \
-  --input /data/test_set_ten_prod_ten_locations_080623 \
+  --input /data/$INPUT_DATASET \
   --output /script/result/output
 ```
 
