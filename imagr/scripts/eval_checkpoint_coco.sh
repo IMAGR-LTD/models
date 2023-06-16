@@ -1,4 +1,4 @@
-MODEL="run1"
+MODEL="4k_data"
 MODEL_DIR=/trained_model/$MODEL
 python3 research/object_detection/model_main.py \
   --model_dir=$MODEL_DIR \

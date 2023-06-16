@@ -5,8 +5,9 @@
 gcloud auth login 
 gcloud config set project ml-shared-c-c41d
 # docker 
-gcloud auth configure-docker \
-    australia-southeast1-docker.pkg.dev
+gcloud auth configure-docker australia-southeast1-docker.pkg.dev
+gcloud auth configure-docker gcr.io
+    
 ```
 
 # models
@@ -101,6 +102,12 @@ bash imagr/scripts/pipeline.sh
 
 If you want to have an interactive shell then you can run the docker container and mount the whole folder
 
+```bash 
+bash 
+```
+
+
+
 ```bash
 # Assuming you are in the models directory
 docker run --gpus device=3 -it -v $PWD:/home/tensorflow/models \
@@ -144,5 +151,46 @@ python3 imagr/scripts/detect_image.py \
   --labels /models/models_imagr/labels.txt \
   --input /data/images/$INPUT_DATASET \
   --output /results/$MODEL_DIR"_"$INPUT_DATASET
+```
+
+
+
+# Eval edgetpu model with coco 
+
+### Prepare coco ground true 
+
+data_imagr
+
+├── coco_dt
+│   └── OD_instore_090623_testset
+├── coco_gt
+│   └── OD_instore_090623_testset
+├── images
+│   ├── OD_instore_090623_testset
+├── label_map
+└── tfrecord
+
+```bash 
+# name the ground true coco file with the same name as the dataset name 
+# eg. OD_instore_090623_testset.json under 
+# coco_gt-> OD_instore_090623_testset -> OD_instore_090623_testset.json
+```
+
+### Update the model and the testset 
+
+```bash 
+DATASET="OD_instore_090623_testset"
+MODEL_DIR="4k_data"
+python3 imagr/scripts/run_edgetpu_coco_metric.py \
+-m /models/models_imagr/$MODEL_DIR/export/model_edgetpu.tflite \
+-i /data/images/$DATASET \
+-a /data/coco_gt/$DATASET/$DATASET.json \
+-o /data/coco_dt/$DATASET
+```
+
+### Run the script 
+
+```bash 
+bash imagr/scripts/eval_edgetpu_coco.sh
 ```
 
