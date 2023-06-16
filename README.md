@@ -1,3 +1,7 @@
+# Models
+
+This is IMAGR fork of https://github.com/tensorflow/models. There are imagr additions to train models.
+
 # Authenticate 
 
 ```bash 
@@ -9,10 +13,6 @@ gcloud auth configure-docker australia-southeast1-docker.pkg.dev
 gcloud auth configure-docker gcr.io
     
 ```
-
-# models
-
-This is IMAGR fork of https://github.com/tensorflow/models. There are imagr additions to train models.
 
 # Track data and models 
 
@@ -96,14 +96,15 @@ change the pipeline
 bash imagr/scripts/pipeline.sh
 ```
 
-# Eval 
+# Eval checkpoint 
 
 ### Interactive shell
 
 If you want to have an interactive shell then you can run the docker container and mount the whole folder
 
 ```bash 
-bash 
+# change the gpu id you want to use device=0
+bash run_od_tf1_docker.sh
 ```
 
 
@@ -118,42 +119,42 @@ docker run --gpus device=3 -it -v $PWD:/home/tensorflow/models \
 
 
 
-# Inference 
+# Inference edgetpu on jpg  
 
 ```bash
 # build docker container for inference 
 docker build -f imagr/dockerfile/inf_edgetpu/Dockerfile -t edgetpu_inf .
-bash inf_docker_run.sh
-# modify the imagr/script/inf.sh MODEL_DIR and DATASET
-# then run 
-bash imagr/scripts/inf.sh
+bash run_edgetpu_docker.sh
+
+# Change dataset and model
+# MODEL_DIR="4k_data"
+# INPUT_DATASET="OD_instore_090623_testset"
+bash imagr/scripts/inf_edgetpu_jpg.sh
 ```
 
-
+`run_edgetpu_docker.sh`
 
 ```bash
 # --privileged flag is used to enable access to USB devices
 docker run -it --privileged -v /dev/bus/usb:/dev/bus/usb \
--v $PWD/inf_imagr:/inf \
--v $PWD/models_imagr:/models \
+-v $PWD:/models \
 -v $PWD/data_imagr:/data \
--w /inf \
+-v $PWD/results:/results \
+-w /models \
 edgetpu_inf bash 
 ```
 
-
+`inf_edgetpu_jpg.sh`
 
 ```bash
-MODEL_DIR="every_ten"
+MODEL_DIR="4k_data"
 INPUT_DATASET="OD_instore_090623_testset"
-python3 imagr/scripts/detect_image.py \
+python3 imagr/scripts/run_edgetpu_inf_jpg.py \
   --model /models/models_imagr/$MODEL_DIR/export/model_edgetpu.tflite \
   --labels /models/models_imagr/labels.txt \
   --input /data/images/$INPUT_DATASET \
   --output /results/$MODEL_DIR"_"$INPUT_DATASET
 ```
-
-
 
 # Eval edgetpu model with coco 
 
@@ -188,9 +189,11 @@ python3 imagr/scripts/run_edgetpu_coco_metric.py \
 -o /data/coco_dt/$DATASET
 ```
 
-### Run the script 
+### Start the docker and Run the script 
 
 ```bash 
+bash run_edgetpu_docker.sh
+# inside the docker run 
 bash imagr/scripts/eval_edgetpu_coco.sh
 ```
 
