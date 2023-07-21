@@ -1,5 +1,6 @@
 outs:
-- md5: c45938f7a2e4886879c1c32260ffbde2.dir
-  size: 2204685318
-  nfiles: 5328
+- md5: 002f4dd7eef1736708e4b79c48cac633.dir
+  size: 6332187387
+  nfiles: 56910
   path: data_imagr
+  hash: md5

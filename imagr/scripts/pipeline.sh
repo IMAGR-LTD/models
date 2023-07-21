@@ -2,8 +2,8 @@
 
 set -ex
 
-MODEL="10prod_moving"
-DEVICE=0
+MODEL="FP_dylan_desk"
+DEVICE=2
 
 
 OUTPUT_DIR="$PWD/models_imagr/$MODEL"

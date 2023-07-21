@@ -1,5 +1,6 @@
 outs:
-- md5: 9d56d58e495b042fc9ace20574fea3eb.dir
-  size: 2794690859
-  nfiles: 161
+- md5: 2945eb95490c53970b4ad3b12a3a1999.dir
+  size: 4890281093
+  nfiles: 265
   path: models_imagr
+  hash: md5
