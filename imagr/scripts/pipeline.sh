@@ -2,7 +2,7 @@
 
 set -ex
 
-MODEL="FP_dylan_desk"
+MODEL="from_scratch"
 DEVICE=2
 
 

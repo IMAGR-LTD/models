@@ -24,30 +24,39 @@ def isp_it(img):
 
   return img_rgb
 
-file_path= '/home/walter/big_daddy/nigel/hm01b0_data/od_office_200723_blue'
-save_dir = "/home/walter/nas_cv/walter_stuff/test/images/od_office_200723"
-images=glob.glob(f"{file_path}/*.bayer")
+for cam in ["cam_0", "cam_1", "cam_2"]:
 
-for fname in images:
-  fd=open(fname,'rb')
-  bayer_8bit=np.fromfile(fd,dtype=np.uint8)
-  bayer_8bit=bayer_8bit.reshape(324,324)
-  linear_img=isp_it(bayer_8bit)
-  img_gammad=np.array(255*(linear_img/255)**0.65,dtype='uint8')
 
-  # # cv2.imshow('rgb image isp non linear',bayer_8bit)
-  # # cv2.waitKey(5)
+  file_path= f'/home/walter/big_daddy/nigel/hm01b0_data/event_Data_020823_2/{cam}/something'
+  save_dir = f"/home/walter/git/pipeline/models/data_imagr/images/{cam}"
+  images=glob.glob(f"{file_path}/*/*.bayer")
 
-  savename = re.sub(".bayer", ".jpg", fname)
-  savename = re.sub(file_path, save_dir, savename)
-  os.makedirs(os.path.dirname(savename), exist_ok=True)
-  
-  # print(savename)
-  basename = os.path.basename(savename)
-  cam = basename.split("_")[4]
-  if cam == "101"or cam == "102":
-    rotated_image = cv2.rotate(img_gammad, cv2.ROTATE_90_COUNTERCLOCKWISE)
-    cv2.imwrite(savename,rotated_image,[cv2.IMWRITE_JPEG_QUALITY,100])
-  else:
-    rotated_image = cv2.rotate(img_gammad, cv2.ROTATE_180)
-    cv2.imwrite(savename,rotated_image,[cv2.IMWRITE_JPEG_QUALITY,100])
+  for fname in images:
+    fd=open(fname,'rb')
+    bayer_8bit=np.fromfile(fd,dtype=np.uint8)
+    bayer_8bit=bayer_8bit.reshape(324,324)
+    linear_img=isp_it(bayer_8bit)
+    img_gammad=np.array(255*(linear_img/255)**0.65,dtype='uint8')
+
+    # # cv2.imshow('rgb image isp non linear',bayer_8bit)
+    # # cv2.waitKey(5)
+    
+    parent_dir = os.path.dirname(fname)
+    parent_dir_name = os.path.basename(parent_dir)
+
+    basename = os.path.basename(fname)
+    savename = re.sub(".bayer", ".jpg", basename)
+    # savename = re.sub(file_path, save_dir, savename)
+    dir = os.path.join(save_dir, parent_dir_name)
+    os.makedirs(dir, exist_ok=True)
+    save_path = os.path.join(dir, savename)
+
+    print(save_path)
+    
+    cam = basename.split("_")[2]
+    if cam == "1"or cam == "2":
+      rotated_image = cv2.rotate(img_gammad, cv2.ROTATE_90_COUNTERCLOCKWISE)
+      cv2.imwrite(save_path,rotated_image,[cv2.IMWRITE_JPEG_QUALITY,100])
+    else:
+      rotated_image = cv2.rotate(img_gammad, cv2.ROTATE_180)
+      cv2.imwrite(save_path,rotated_image,[cv2.IMWRITE_JPEG_QUALITY,100])
