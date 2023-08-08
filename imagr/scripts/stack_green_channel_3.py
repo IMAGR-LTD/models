@@ -1,7 +1,7 @@
-import os 
+import os
 from PIL import Image, ImageDraw
 import numpy as np
-import glob 
+import glob
 from collections import defaultdict
 import pprint
 import re
@@ -11,10 +11,10 @@ import uuid
 
 def xywh_xyxy(xywh):
     x, y, w, h = xywh
-    xmin = x 
-    xmax = x + w  
-    ymin = y 
-    ymax = y + h 
+    xmin = x
+    xmax = x + w
+    ymin = y
+    ymax = y + h
     return [xmin, ymin, xmax, ymax]
 
 
@@ -24,10 +24,12 @@ def read_label(file):
         for line in f:
             obj = line.split()
             item, x, y, w, h = obj
-            xmin, ymin, xmax, ymax = xywh_xyxy(map(lambda x: float(x), [x, y, w, h]))
-            xmin, ymin, xmax, ymax = map(lambda x: int(x * 324), [xmin, ymin, xmax, ymax] )
+            xmin, ymin, xmax, ymax = xywh_xyxy(
+                map(lambda x: float(x), [x, y, w, h]))
+            xmin, ymin, xmax, ymax = map(
+                lambda x: int(x * 324), [xmin, ymin, xmax, ymax])
             bboxs.append([xmin, ymin, xmax, ymax])
-    
+
     return bboxs
 
 
@@ -47,7 +49,8 @@ def stack_green_and_get_label(imgs_list, labels_list):
     img1_np = np.array(Image.open(imgs_list[0]))
     img2_np = np.array(Image.open(imgs_list[1]))
     img3_np = np.array(Image.open(imgs_list[2]))
-    stack_green_np = np.stack([img1_np[:,:,1],img2_np[:,:,1],img3_np[:,:,1]],axis=2)
+    stack_green_np = np.stack(
+        [img1_np[:, :, 1], img2_np[:, :, 1], img3_np[:, :, 1]], axis=2)
 
     l1 = load_yolo_label(labels_list[0])
     l2 = load_yolo_label(labels_list[1])
@@ -60,7 +63,14 @@ def stack_green_and_get_label(imgs_list, labels_list):
     xmax = max(xmax_1, xmax_2, xmax_3)
     ymax = max(ymax_1, ymax_2, ymax_3)
 
-    return Image.fromarray(stack_green_np), [xmin, ymin, xmax, ymax]
+    # class id 1 means in, 2 means out
+    class_id = 1
+    if ymin_3 > ymin_1:
+        class_id = 1
+    else:
+        class_id = 2
+
+    return Image.fromarray(stack_green_np), [xmin, ymin, xmax, ymax], class_id
 
 
 def split_by_cameras(labels):
@@ -95,37 +105,81 @@ def get_img_and_label_list(labels_folder):
     labels = sorted(list(filter(filter_valid_label, labels)))
     imgs = get_imgs_list_by(labels)
     return imgs, labels
-    
+
 
 def run(imgs, labels, img_save, label_save, result_path):
     for i in range(len(imgs)-2):
         imgs_list = imgs[i:i+3]
         labels_list = labels[i:i+3]
         filename = uuid.uuid4()
-        img, bbox = stack_green_and_get_label(imgs_list, labels_list)
-        save_label_file(bbox, os.path.join(label_save, f"{filename}.txt"))
+        img, bbox, class_id = stack_green_and_get_label(imgs_list, labels_list)
+        save_label_file(bbox, os.path.join(
+            label_save, f"{filename}.txt"), class_id)
         img.save(os.path.join(img_save, f"{filename}.jpg"))
         ImageDraw.Draw(img).rectangle(bbox)
         img.save(os.path.join(result_path, f"{filename}.jpg"))
 
 
+def get_consecutive_labels(labels):
+    consecutive_frames = [[]]
+    for i in range(len(labels)):
+        frame = labels[i]
+        basename = os.path.basename(frame)
+        timestamp = int(basename.split('_')[0])
+        if len(consecutive_frames[-1]) > 0:
+            lastframe = consecutive_frames[-1][-1]
+            last_timestamp = int(os.path.basename(lastframe).split("_")[0])
+            if timestamp - last_timestamp < 60:
+                consecutive_frames[-1].append(frame)
+            else:
+                consecutive_frames.append([frame])
+        else:
+            consecutive_frames[-1].append(frame)
 
-img_save_dir = "/home/walter/nas_cv/walter_stuff/stack_green_channel/images/"
-label_save_dir = "/home/walter/nas_cv/walter_stuff/stack_green_channel/labels/"
-result_save_dir = "/home/walter/nas_cv/walter_stuff/stack_green_channel/results/"
-dataset = "od_no_skip"
+    return consecutive_frames
 
-label_raw_dir = "/home/walter/nas_cv/walter_stuff/stack_green_channel/raw/labels/od_no_skip/"
-cams = os.listdir(label_raw_dir)
-for cam in cams:
-    label_dir = os.path.join(label_raw_dir, cam)
-    barcodes = os.listdir(label_dir)
-    for barcode in barcodes:
-        imgs, labels = get_img_and_label_list(os.path.join(label_raw_dir, cam, barcode))
-        img_save = os.path.join(img_save_dir, cam, dataset, barcode)
-        label_save = os.path.join(label_save_dir, cam, dataset, barcode)
-        result_save = os.path.join(result_save_dir, cam, dataset, barcode)
-        os.makedirs(img_save, exist_ok=True)
-        os.makedirs(label_save, exist_ok=True)
-        os.makedirs(result_save, exist_ok=True)
-        run(imgs, labels, img_save, label_save, result_save)
+
+cam = "cam_2"
+img_save_dir = f"/home/walter/git/green_data/green/images/{cam}"
+label_save_dir = f"/home/walter/git/green_data/green/labels/{cam}"
+result_save_dir = f"/home/walter/git/green_data/green/results/{cam}"
+
+label_raw_dir = f"/home/walter/git/green_data/labels/{cam}"
+events = os.listdir(label_raw_dir)
+for event in events:
+    event_path = os.path.join(label_raw_dir, event)
+    labels = list(sorted(glob.glob(f"{event_path}/*.txt")))
+
+    consecutive_frames = get_consecutive_labels(labels)
+    if len(consecutive_frames) >= 1:
+        for consecutive_frame in consecutive_frames:
+            if len(consecutive_frame) >= 3:
+                imgs = get_imgs_list_by(consecutive_frame)
+                # pprint.pprint(imgs)
+                # pprint.pprint(consecutive_frame)
+                # img_save = os.path.join(img_save_dir, cam, dataset, barcode)
+                # label_save = os.path.join(label_save_dir, cam, dataset, barcode)
+                # result_save = os.path.join(result_save_dir, cam, dataset, barcode)
+                os.makedirs(img_save_dir, exist_ok=True)
+                os.makedirs(label_save_dir, exist_ok=True)
+                os.makedirs(result_save_dir, exist_ok=True)
+                run(imgs, labels, img_save_dir, label_save_dir, result_save_dir)
+
+
+# pprint.pprint(consecutive_frames)
+# pprint.pprint(imgs)
+
+
+# cams = os.listdir(label_raw_dir)
+# for cam in cams:
+#     label_dir = os.path.join(label_raw_dir, cam)
+#     barcodes = os.listdir(label_dir)
+#     for barcode in barcodes:
+#         imgs, labels = get_img_and_label_list(os.path.join(label_raw_dir, cam, barcode))
+#         img_save = os.path.join(img_save_dir, cam, dataset, barcode)
+#         label_save = os.path.join(label_save_dir, cam, dataset, barcode)
+#         result_save = os.path.join(result_save_dir, cam, dataset, barcode)
+#         os.makedirs(img_save, exist_ok=True)
+#         os.makedirs(label_save, exist_ok=True)
+#         os.makedirs(result_save, exist_ok=True)
+#         run(imgs, labels, img_save, label_save, result_save)
