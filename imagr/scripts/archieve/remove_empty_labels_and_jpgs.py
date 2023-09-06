@@ -2,7 +2,7 @@ import os
 import glob 
 import re
 
-labels_path = "/home/walter/git/green_data/labels"
+labels_path = "/home/walter/nas_cv/walter_stuff/yolov5_dataset/labels/new_office_onboard"
 labels = glob.glob(f"{labels_path}/*/*/*.txt")
 print(len(labels))
 
